@@ -1,0 +1,17 @@
+{
+  "name": "olimexnode",
+  "version": "1.0.0",
+  "description": "Reading EEG-SMT value from NodeJS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@serialport/parser-byte-length": "^10.3.0",
+    "endian-reader": "^0.3.0",
+    "mongodb": "^4.9.0",
+    "serialport": "^10.4.0"
+  }
+}
