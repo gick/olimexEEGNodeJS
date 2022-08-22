@@ -6,14 +6,17 @@ let port = new SerialPort({ path: '/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A9
 let parser = port.pipe(new ByteLengthParser({ length: 17 }))
 let endian=new Reader('be',{size:4})
 
-let parse = function (data) {
+let parse = async function (data,callback) {
     let str = data.toString('hex')
-    console.log(str)
     let parsed=normalizeString(str)
-    console.log(getStructuredData(parsed))
+    let datas=getStructuredData(parsed)
+    await callback(datas)
 }
 
-parser.on('data', parse)
+let startListening=function(callback){
+
+    parser.on('data', (data)=>{parse(data,callback)})
+}
 
 
 let normalizeString = function (packet) {
@@ -36,6 +39,7 @@ getStructuredData = function (stringData) {
     let struct={
         version:ver,
         count:count,
+        pState:p,
         data:getEletrodeData(arrayData),
     }
     return struct
@@ -50,3 +54,5 @@ getEletrodeData = function(arrayData){
     }
     return electrodeData
 }
+
+module.exports = {parser,parse,startListening}
