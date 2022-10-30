@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const {registerPackets}=require('./pushToDB')
-const {startListening}=require('./serialReader')
+const {registerPackets}=require('./eegReader/pushToDB')
+const {startListening}=require('./eegReader/serialReader')
 mongoose.connect('mongodb://localhost:27017/eeg', {useNewUrlParser: true, useUnifiedTopology: true});
 
 db = mongoose.connection;

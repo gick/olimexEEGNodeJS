@@ -2,20 +2,23 @@ const { SerialPort } = require('serialport')
 const { ByteLengthParser } = require('@serialport/parser-byte-length')
 const Reader=require('endian-reader')
 
-let port = new SerialPort({ path: '/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A902ZSBS-if00-port0', baudRate: 57600 })
+let port = new SerialPort({ path: '/dev/ttyUSB1', baudRate: 57600 })
 let parser = port.pipe(new ByteLengthParser({ length: 17 }))
 let endian=new Reader('be',{size:4})
-
-let parse = async function (data,callback) {
+let currentData=[]
+let parse =  function (data,{numPackets,callback}) {
     let str = data.toString('hex')
     let parsed=normalizeString(str)
     let datas=getStructuredData(parsed)
-    await callback(datas)
+    currentData.push(datas)
+    if(currentData.length==numPackets){
+         callback(currentData)
+    currentData=[]}
 }
 
-let startListening=function(callback){
+let startListening=function({numPackets,callback}){
 
-    parser.on('data', (data)=>{parse(data,callback)})
+    parser.on('data', (data)=>{parse(data,{numPackets,callback})})
 }
 
 
